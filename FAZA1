@@ -1,0 +1,164 @@
+#include<iostream>   //domeniul: Farmacie
+
+using namespace std;
+
+class Medicament {
+public:
+	const int codProdus;
+	char* nume;
+	float pret;
+	bool disponibiliatate;
+	static int taxaTVA;
+
+	Medicament() :codProdus(2357) {
+		this->nume = new char[strlen("Paracetamol") + 1];
+		strcpy_s(this->nume, strlen("Paracetamol") + 1, "Paracetamol");
+		this->pret = 24.50;
+		this->disponibiliatate = true;
+	}
+
+	Medicament(int codNou) :codProdus(codNou) {
+		this->nume = new char[strlen("Ibuprofen") + 1];
+		strcpy_s(this->nume, strlen("Ibuprofen") + 1, "Ibuprofen");
+		this->pret = 16.75;
+		this->disponibiliatate = false;
+	}
+
+	Medicament(int codNou, float pretNou):codProdus(codNou), pret(pretNou) {
+		this->nume = new char[strlen("Aspirina") + 1];
+		strcpy_s(this->nume, strlen("Aspirina") + 1, "Aspirina");
+		this->disponibiliatate = true;
+	}
+
+	~Medicament() {
+		if (this->nume != NULL) {
+			delete[]this->nume;
+		}
+	}
+
+	void afisare() {
+		cout << this->codProdus << "." << " Nume: "
+			<< this->nume <<" Pret: "<< this->pret << " lei, inclusiv TVA: " << this->taxaTVA << "%. " 
+			<< (this->disponibiliatate ? "Disponibil" : "Indisponibil") << endl;
+	}
+
+};
+int Medicament::taxaTVA = 9;
+
+class Angajat {
+public:
+	const int id;
+	string nume;
+	char* adresa;
+	float aniExperienta;
+	static int nrMaximOreLucrate;
+
+	Angajat() :id(17724){
+		this->nume = "Ana Popescu";
+		this->adresa = new char[strlen("Militari") + 1];
+		strcpy_s(this->adresa, strlen("Militari") + 1, "Militari");
+		this->aniExperienta = 2.5;
+	}
+
+	Angajat(int idActualizat, string numeNou) :id(idActualizat), nume(numeNou) {
+		this->adresa = new char[strlen("Calea Vitan") + 1];
+		strcpy_s(this->adresa, strlen("Calea Vitan") + 1, "Calea Vitan");
+		this->aniExperienta = 5;
+	}
+
+	Angajat(int idActualizat, string numeNou, float ani_experienta) :id(idActualizat), nume(numeNou), aniExperienta(ani_experienta) {
+		this->adresa = new char[strlen("Dorobanti") + 1];
+		strcpy_s(this->adresa, strlen("Dorobanti") + 1, "Dorobanti");
+	}
+
+	~Angajat() {
+		if (this->adresa != NULL) {
+			delete[]this->adresa;
+		}
+	}
+
+	void afisare() {
+		cout << this->id <<". " << "Nume angajat: " << this->nume << ", Adresa: " << this->adresa << ". " << this->aniExperienta << " ani de experienta." << endl;
+		cout << " Nr maxim de ore de lucru permis pe saptamana:" << this->nrMaximOreLucrate << endl;
+	}
+};
+int Angajat::nrMaximOreLucrate = 40;
+
+class Reteta {
+public:
+	const int nrReteta;
+	string numePacient;
+	char* numeMedic;
+	bool eliberata;
+	string dataEmiterii;
+	static int durataValabilitateReteta;
+
+	Reteta() :nrReteta(124) {
+		this->numePacient = "Marian Radu";
+		this->numeMedic= new char[strlen("Gabriel Dobre") + 1];
+		strcpy_s(this->numeMedic, strlen("Gabriel Dobre") + 1, "Gabriel Dobre");
+		this->eliberata = true;
+		this->dataEmiterii = "22-10-2023";
+	}
+
+	Reteta(int nrReretaNou, string numePacientActualizat) :nrReteta(nrReretaNou), numePacient(numePacientActualizat) {
+		this->numeMedic = new char[strlen("Florin Georgescu") + 1];
+		strcpy_s(this->numeMedic, strlen("Florin Georgescu") + 1, "Florin Georgescu");
+		this->eliberata = false;
+		this->dataEmiterii = "05-08-2023";
+	}
+
+	Reteta(int nrReretaNou, string numePacientActualizat, string data_emiterii) :nrReteta(nrReretaNou), numePacient(numePacientActualizat), dataEmiterii(data_emiterii) {
+		this->numeMedic = new char[strlen("Gabriel Dobre") + 1];
+		strcpy_s(this->numeMedic, strlen("Gabriel Dobre") + 1, "Gabriel Dobre");
+		this->eliberata = true;
+	}
+
+	~Reteta() {
+		if (this->numeMedic != NULL) {
+			delete[]this->numeMedic;
+		}
+	}
+
+	void afisare() {
+		cout << this->nrReteta << ". " << "Pacient:" << this->numePacient << ", Medic: " << this->numeMedic << ". Data emiterii: " << this->dataEmiterii
+			<< " cu valabilitatea de " << this->durataValabilitateReteta <<"\n"<< (this->eliberata ? " Reteta a fost ELIBERATA." : " Reteta NU a fost ELIBERATA.") << endl;
+	}
+};
+int Reteta::durataValabilitateReteta = 90;
+
+void main() {
+	cout << "Medicament:\n" << endl;
+
+	Medicament medicament1;
+	medicament1.afisare();
+
+	Medicament medicament2(2123);
+	medicament2.afisare();
+
+	Medicament medicament3(4211, 21.2);
+	medicament3.afisare();
+
+	cout << "\nAngajat:\n" << endl;
+
+	Angajat angajat1;
+	angajat1.afisare();
+
+	Angajat angajat2(42232, "Laura Ungureanu");
+	angajat2.afisare();
+
+	Angajat angajat3(98722, "Adrian Stan", 1.5);
+	angajat3.afisare();
+
+	cout << "\nReteta:\n" << endl;
+
+	Reteta reteta1;
+	reteta1.afisare();
+
+	Reteta reteta2(437, "Daniela Radu");
+	reteta2.afisare();
+
+	Reteta reteta3(902, "Maria Mihai", "01-09-2022");
+	reteta3.afisare();
+
+}
