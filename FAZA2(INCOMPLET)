@@ -1,0 +1,377 @@
+#include<iostream>   //domeniul: Farmacie
+
+using namespace std;
+
+class Medicament {
+private:
+	const int codProdus;
+	char* nume;
+	float pret;
+	bool disponibilitate;
+	static int taxaTVA;
+public:
+	Medicament() :codProdus(1000) {
+		this->nume = new char[strlen("Paracetamol") + 1];
+		strcpy_s(this->nume, strlen("Paracetamol") + 1, "Paracetamol");
+		this->pret = 1.00;
+		this->disponibilitate = false;
+	}
+
+	Medicament(int codNou) :codProdus(codNou) {
+		this->nume = new char[strlen("Ibuprofen") + 1];
+		strcpy_s(this->nume, strlen("Ibuprofen") + 1, "Ibuprofen");
+		this->pret = 16.75;
+		this->disponibilitate = false;
+	}
+
+	Medicament(int codNou, float pretNou) :codProdus(codNou), pret(pretNou) {
+		this->nume = new char[strlen("Aspirina") + 1];
+		strcpy_s(this->nume, strlen("Aspirina") + 1, "Aspirina");
+		this->disponibilitate = true;
+	}
+
+	Medicament(const Medicament& p) :codProdus(p.codProdus) {
+		this->nume = new char[strlen(p.nume) + 1];
+		strcpy_s(this->nume, strlen(p.nume) + 1, p.nume);
+		pret = p.pret;
+		disponibilitate = p.disponibilitate;
+	}
+
+	~Medicament() {
+		if (this->nume != NULL) {
+			delete[]this->nume;
+		}
+	}
+
+	void afisare() {
+		cout << this->codProdus << "." << " Nume: "
+			<< this->nume << " Pret: " << this->pret << " lei, inclusiv TVA: " << this->taxaTVA << "%. "
+			<< (this->disponibilitate ? "Disponibil" : "Indisponibil") << endl;
+	}
+
+	const int getCodProdus() {
+		return this->codProdus;
+	}
+
+	char* getNume() {
+		return this->nume;
+	}
+
+	void setNume(const char* numeNou) {
+		if (numeNou != NULL) {
+			delete[]nume;
+			nume = new char[strlen(numeNou) + 1];
+			strcpy_s(nume, strlen(numeNou) + 1, numeNou);
+		}
+	}
+
+	float getPret() {
+		return this->pret;
+	}
+
+	void setPret(float pretNou) {
+		if (pretNou >= 0) {
+			this->pret = pretNou;
+		}
+	}
+
+	bool getDisponibilitate() {
+		return this->disponibilitate;
+	}
+
+	void setDisponibilitate(bool valoare) {
+		this->disponibilitate = valoare;
+	}
+
+	static int getTaxaTva() {
+		return Medicament::taxaTVA;
+	}
+
+	static void setTaxaTva(int taxa) {
+		if (taxa >= 0) {
+			Medicament::taxaTVA = taxa;
+		}
+	}
+
+};
+int Medicament::taxaTVA = 9;
+
+class Angajat {
+private:
+	const int id;
+	string nume;
+	char* adresa;
+	float aniExperienta;
+	static int nrMaximOreLucrate;
+public:
+	Angajat() :id(10000) {
+		this->nume = "Ana Popescu";
+		this->adresa = new char[strlen("Militari") + 1];
+		strcpy_s(this->adresa, strlen("Militari") + 1, "Militari");
+		this->aniExperienta = 0;
+	}
+
+	Angajat(int idActualizat, string numeNou) :id(idActualizat), nume(numeNou) {
+		this->adresa = new char[strlen("Calea Vitan") + 1];
+		strcpy_s(this->adresa, strlen("Calea Vitan") + 1, "Calea Vitan");
+		this->aniExperienta = 5;
+	}
+
+	Angajat(int idActualizat, string numeNou, float ani_experienta) :id(idActualizat), nume(numeNou), aniExperienta(ani_experienta) {
+		this->adresa = new char[strlen("Dorobanti") + 1];
+		strcpy_s(this->adresa, strlen("Dorobanti") + 1, "Dorobanti");
+	}
+
+	Angajat(const Angajat& p) :id(p.id) {
+		nume = p.nume;
+		this->adresa = new char[strlen(p.adresa) + 1];
+		strcpy_s(this->adresa, strlen(p.adresa) + 1, p.adresa);
+		aniExperienta = p.aniExperienta;
+	}
+
+	~Angajat() {
+		if (this->adresa != NULL) {
+			delete[]this->adresa;
+		}
+	}
+
+	void afisare() {
+		cout << this->id << ". " << "Nume angajat: " << this->nume << ", Adresa: " << this->adresa << ". " << this->aniExperienta << " ani de experienta." << endl;
+		cout << " Nr maxim de ore de lucru permis pe saptamana:" << this->nrMaximOreLucrate << endl;
+	}
+
+	const int getId() {
+		return this->id;
+	}
+
+	string getNume() {
+		return this->nume;
+	}
+
+	char* getAdresa() {
+		return this->adresa;
+	}
+
+	float getAniExperienta() {
+		return this->aniExperienta;
+	}
+
+	static int getNrMaximOreLucrate() {
+		return Angajat::nrMaximOreLucrate;
+	}
+};
+int Angajat::nrMaximOreLucrate = 40;
+
+class Reteta {
+private:
+	const int nrReteta;
+	string numePacient;
+	char* numeMedic;
+	int nrMedicamentePrescrise;
+	int* doze;
+	string dataEmiterii;
+	static int durataValabilitateReteta;
+public:
+	Reteta() :nrReteta(100) {
+		this->numePacient = "Pacient";
+		this->numeMedic = new char[strlen("Medic") + 1];
+		strcpy_s(this->numeMedic, strlen("Medic") + 1, "Medic");
+		this->nrMedicamentePrescrise = 0;
+		this->doze = NULL;
+		this->dataEmiterii = "01-01-2021";
+	}
+
+	Reteta(int nrReretaNou, string numePacientActualizat) :nrReteta(nrReretaNou), numePacient(numePacientActualizat) {
+		this->numeMedic = new char[strlen("Gabriel Dobre") + 1];
+		strcpy_s(this->numeMedic, strlen("Gabriel Dobre") + 1, "Gabriel Dobre");
+		this->nrMedicamentePrescrise = 0;
+		this->doze = NULL;
+		this->dataEmiterii = "01-01-2021";
+
+	}
+
+	Reteta(int nrReretaNou, string numePacientActualizat, int nrMedicamente, int* doze) :nrReteta(nrReretaNou),
+		numePacient(numePacientActualizat), nrMedicamentePrescrise(nrMedicamente) {
+		this->numeMedic = new char[strlen("Florin Georgescu") + 1];
+		strcpy_s(this->numeMedic, strlen("Florin Georgescu") + 1, "Florin Georgescu");
+		if (nrMedicamentePrescrise != 0) {
+			this->doze = new int[nrMedicamentePrescrise];
+			for (int i = 0;i < nrMedicamentePrescrise;i++) {
+				this->doze[i] = doze[i];
+			}
+		}
+		else this->nrMedicamentePrescrise = NULL;
+		this->dataEmiterii = "05-08-2023";
+	}
+
+	Reteta(const Reteta& p) :nrReteta(p.nrReteta) {
+		numePacient = p.numePacient;
+		this->numeMedic = new char[strlen(p.numeMedic) + 1];
+		strcpy_s(this->numeMedic, strlen(p.numeMedic) + 1, p.numeMedic);
+		nrMedicamentePrescrise = p.nrMedicamentePrescrise;
+		if (nrMedicamentePrescrise != 0) {
+			this->doze = new int[nrMedicamentePrescrise];
+			for (int i = 0;i < nrMedicamentePrescrise;i++) {
+				this->doze[i] = p.doze[i];
+			}
+		}
+		else this->doze = NULL;
+		dataEmiterii = p.dataEmiterii;
+	}
+
+	~Reteta() {
+		if (this->numeMedic != NULL) {
+			delete[]this->numeMedic;
+		}
+	}
+
+	void afisare() {
+		cout << this->nrReteta << ". " << "Pacient:" << this->numePacient << ", Medic: " << this->numeMedic << ". Data emiterii: " << this->dataEmiterii
+			<< " cu valabilitatea de " << this->durataValabilitateReteta << " de zile, " << this->nrMedicamentePrescrise << " medicamente prescrise." << endl;
+		if (nrMedicamentePrescrise != NULL) {
+			cout << "Doze: ";
+			for (int i = 0;i < nrMedicamentePrescrise;i++) {
+				cout << doze[i] << " mg ";
+			}
+		}
+		else {
+			cout << " - ";
+		}
+		cout << endl;
+	}
+
+	const int getNrReteta() {
+		return this->nrReteta;
+	}
+
+	string getNumePacient() {
+		return this->numePacient;
+	}
+
+	char* getNumeMedic() {
+		return this->numeMedic;
+	}
+
+	int getnrMedicamentePrescrise() {
+		return this->nrMedicamentePrescrise;
+	}
+
+	int getDoze(int index) {
+		if (index >= 0 && index < this->nrMedicamentePrescrise) {
+			return this->doze[index];
+		}
+	}
+
+	string getDataEmiterii() {
+		return this->dataEmiterii;
+	}
+
+	static int getDurataValabilitateReteta() {
+		return Reteta::durataValabilitateReteta;
+	}
+
+};
+int Reteta::durataValabilitateReteta = 90;
+
+void main() {
+	cout << "Medicament:\n" << endl;
+
+	Medicament medicament1;
+	medicament1.afisare();
+
+	Medicament medicament2(2123);
+	medicament2.afisare();
+
+	Medicament medicament3(4211, 21.2);
+	medicament3.afisare();
+
+	cout << "-------------------" << endl;
+
+	Medicament medicament4(medicament2);
+	medicament4.afisare();
+
+	cout << medicament2.getCodProdus() << endl;
+
+	cout << medicament2.getPret() << endl;
+	
+	cout << medicament2.getNume() << endl;
+
+	cout << (medicament2.getDisponibilitate()?"Disponibil":"Indisponibil") << endl;
+
+	cout << medicament2.getTaxaTva() << "%" << endl;
+
+    medicament4.setPret(23.10);
+	cout << "Pret nou: " << medicament4.getPret() << endl;
+
+	const char* numeNou = "Valeriana";
+	medicament4.setNume(numeNou);
+	cout << "Nume nou: " << medicament4.getNume() << endl;
+
+	medicament4.setDisponibilitate(true);
+	cout <<"Disponibilitate actualizata: " << (medicament4.getDisponibilitate() ? "Disponibil" : "Indisponibil") << endl;
+
+	medicament4.setTaxaTva(5);
+	cout <<"Taxa TVA noua: " << medicament4.getTaxaTva() << "%" << endl;
+	
+	cout << "\nAngajati:\n" << endl;
+
+	Angajat angajat1;
+	angajat1.afisare();
+
+	Angajat angajat2(42232, "Laura Ungureanu");
+	angajat2.afisare();
+
+	Angajat angajat3(98722, "Adrian Stan", 1.5);
+	angajat3.afisare();
+
+	cout << "-------------------" << endl;
+
+	Angajat angajat4(angajat3);
+	angajat4.afisare();
+
+	cout << angajat3.getId() << endl;
+
+	cout << angajat3.getNume() << endl;
+
+	cout << angajat3.getAdresa() << endl;
+
+	cout << angajat3.getAniExperienta() << endl;
+
+	cout << angajat3.getNrMaximOreLucrate() << endl;
+
+	cout << "\nReteta:\n" << endl;
+
+	int* doza;
+	doza = new int[2];
+	doza[0] = 300;
+	doza[1] = 250;
+	Reteta reteta1;
+	reteta1.afisare();
+
+	Reteta reteta2(902, "Maria Mihai");
+	reteta2.afisare();
+
+	Reteta reteta3(437, "Daniela Radu", 2, doza);
+	reteta3.afisare();
+
+	cout << "-------------------" << endl;
+
+	Reteta reteta4(reteta3);
+	reteta4.afisare();
+
+	cout << reteta4.getNrReteta() << endl;
+
+	cout << reteta4.getNumePacient() << endl;
+
+	cout << reteta4.getNumeMedic() << endl;
+
+	cout << reteta4.getnrMedicamentePrescrise() << endl;
+
+	cout << reteta4.getDoze(0)<< endl << reteta4.getDoze(1) << endl;
+
+	cout << reteta4.getDataEmiterii() << endl;
+
+	cout << reteta4.getDurataValabilitateReteta() << endl;
+
+	delete[]doza;
+}
