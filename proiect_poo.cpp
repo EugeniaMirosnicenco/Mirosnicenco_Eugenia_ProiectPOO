@@ -185,6 +185,57 @@ ostream& operator<<(ostream& consola, const Medicament& medicament) {
 	return consola;
 }
 
+class Antibiotic : public Medicament {
+private:
+	string formaFarmaceutica; // ex: comprimate, capsule, sirop, etc.
+	char* clasa; //ex: peniciline, macrolide, glicopeptide
+	bool necesitaReteta;
+public:
+	Antibiotic() :Medicament(90021, 24.1) {
+		this->formaFarmaceutica = "Capsule";
+		this->clasa = new char[strlen("Macrolide") + 1];
+		strcpy_s(this->clasa, strlen("Macrolide") + 1, "Macrolide");
+		this->necesitaReteta = 0;
+	}
+
+	Antibiotic(string formaFarmaceutica, bool necesitaReteta, int cod) : Medicament(cod) {
+		this->formaFarmaceutica = formaFarmaceutica;
+		this->clasa = new char[strlen("Macrolide") + 1];
+		strcpy_s(this->clasa, strlen("Macrolide") + 1, "Macrolide");
+		this->necesitaReteta = necesitaReteta;
+	}
+
+	Antibiotic(const Antibiotic& a) :Medicament(a) {
+		this->formaFarmaceutica = a.formaFarmaceutica;
+		this->clasa = new char[strlen(a.clasa) + 1];
+		strcpy_s(this->clasa, strlen(a.clasa) + 1, a.clasa);
+		this->necesitaReteta = a.necesitaReteta;
+	}
+
+	Antibiotic operator=(const Antibiotic& a) {
+		if (this != &a) {
+			Medicament::operator=(a);
+			this->formaFarmaceutica = a.formaFarmaceutica;
+			if (this->clasa != NULL) {
+				delete[]this->clasa;
+			}
+			this->clasa = new char[strlen(a.clasa) + 1];
+			strcpy_s(this->clasa, strlen(a.clasa) + 1, a.clasa);
+			this->necesitaReteta = a.necesitaReteta;
+		}
+		return *this;
+	}
+
+	~Antibiotic() {
+		if (this->clasa != NULL) {
+			delete[]this->clasa;
+		}
+	}
+
+
+	
+};
+
 class Angajat {
 private:
 	const int id;
@@ -1302,7 +1353,7 @@ void main() {
 
 	//fis.close();
 
-	Angajat angajat6(4902, "Marin", 9);
+	//Angajat angajat6(4902, "Marin", 9);
 	//cout << angajat6;
 
 	//ofstream f("angajati.txt", ios::out);
@@ -1325,34 +1376,38 @@ void main() {
 	//delete[]doze;
 	//delete[]doza;
 
-    cout << " Fisiere binare: " << endl;
+ //   cout << " Fisiere binare: " << endl;
 
-	Angajat angajat8(angajat6);
-	cout << angajat8;
-	fstream fisierBinar("angajat.txt", ios::out | ios::binary);
-	angajat8.scrieInFisierBinar(fisierBinar);
+	//Angajat angajat8(angajat6);
+	//cout << angajat8;
+	//fstream fisierBinar("angajat.txt", ios::out | ios::binary);
+	//angajat8.scrieInFisierBinar(fisierBinar);
 
-	fisierBinar.close();
+	//fisierBinar.close();
 
-	fstream fisBinar("angajat.txt", ios::in | ios::binary);
-	Angajat angajat9;
-	angajat9.citesteDinFisierBinar(fisBinar);
-	cout << angajat9;
-	fisBinar.close();
+	//fstream fisBinar("angajat.txt", ios::in | ios::binary);
+	//Angajat angajat9;
+	//angajat9.citesteDinFisierBinar(fisBinar);
+	//cout << angajat9;
+	//fisBinar.close();
 
-	Reteta reteta7(reteta3);
+	//Reteta reteta7(reteta3);
 
-	cout << reteta7;
+	//cout << reteta7;
 
-	fstream fb("reteta.txt", ios::out | ios::binary);
-	reteta7.scrieInFisierBinar(fb);
+	//fstream fb("reteta.txt", ios::out | ios::binary);
+	//reteta7.scrieInFisierBinar(fb);
 
-	fb.close();
+	//fb.close();
 
-	fstream fbin("reteta.txt", ios::in | ios::binary);
-	Reteta reteta8;
-	reteta8.citesteDinFisierBinar(fbin);
-	cout << reteta8;
+	//fstream fbin("reteta.txt", ios::in | ios::binary);
+	//Reteta reteta8;
+	//reteta8.citesteDinFisierBinar(fbin);
+	//cout << reteta8;
 
-	fbin.close();
+	//fbin.close();
+
+    cout << "Mostenire" << endl;
+
+
 } 
