@@ -44,7 +44,7 @@ public:
 			if (this->nume != NULL) {
 				delete[]this->nume;
 			}
-			this->nume = new char[strlen(m.nume) + 1 ];
+			this->nume = new char[strlen(m.nume) + 1];
 			strcpy_s(this->nume, strlen(m.nume) + 1, m.nume);
 			this->pret = m.pret;
 			this->disponibilitate = m.disponibilitate;
@@ -78,9 +78,11 @@ public:
 
 	void setNume(const char* numeNou) {
 		if (numeNou != NULL) {
-			delete[]nume;
-			nume = new char[strlen(numeNou) + 1];
-			strcpy_s(nume, strlen(numeNou) + 1, numeNou);
+			if (this->nume != NULL) {
+				delete[]this->nume;
+			}
+			this->nume = new char[strlen(numeNou) + 1];
+			strcpy_s(this->nume, strlen(numeNou) + 1, numeNou);
 		}
 	}
 
@@ -111,7 +113,7 @@ public:
 			Medicament::taxaTVA = taxa;
 		}
 	}
-	
+
 	friend float calculeazaPretCuReducere(const Medicament& medicament, float procentRreducere);
 	friend float calculeazaPretFaraTVA(const Medicament& medicament);
 
@@ -125,9 +127,9 @@ public:
 		if (medicament.nume != NULL) {
 			delete[]medicament.nume;
 		}
-		medicament.nume = new char[strlen(buffer)+1];
+		medicament.nume = new char[strlen(buffer) + 1];
 		strcpy_s(medicament.nume, strlen(buffer) + 1, buffer);
-		
+
 		cout << "Pret: ";
 		tastatura >> medicament.pret;
 		cout << "Disponibilitate (1 - DA, 0 - NU): ";
@@ -149,7 +151,7 @@ public:
 	}
 
 	friend ifstream& operator>>(ifstream& file, Medicament& medicament) {
-		char buffer[100]; 
+		char buffer[100];
 		//cout << "Nume: ";
 		file >> buffer;
 		if (medicament.nume != NULL) {
@@ -179,9 +181,9 @@ float calculeazaPretFaraTVA(const Medicament& medicament) {
 
 ostream& operator<<(ostream& consola, const Medicament& medicament) {
 	consola << medicament.codProdus << "." << " Nume: "
-	<< medicament.nume << " Pret: " << medicament.pret << " lei, inclusiv TVA: " << medicament.taxaTVA << "%. " << endl;
+		<< medicament.nume << " Pret: " << medicament.pret << " lei, inclusiv TVA: " << medicament.taxaTVA << "%. " << endl;
 	consola << (medicament.disponibilitate ? "Disponibil" : "Indisponibil") << endl;
-	
+
 	return consola;
 }
 
@@ -191,7 +193,7 @@ private:
 	char* clasa; //ex: peniciline, macrolide, glicopeptide
 	bool necesitaReteta;
 public:
-	Antibiotic() :Medicament(90021, 24.1) {
+	Antibiotic() :Medicament(10001, 9.99) {
 		this->formaFarmaceutica = "Capsule";
 		this->clasa = new char[strlen("Macrolide") + 1];
 		strcpy_s(this->clasa, strlen("Macrolide") + 1, "Macrolide");
@@ -232,8 +234,61 @@ public:
 		}
 	}
 
+	//string formaFarmaceutica; // ex: comprimate, capsule, sirop, etc.
+	//char* clasa; //ex: peniciline, macrolide, glicopeptide
+	//bool necesitaReteta;
 
-	
+	void setFormaFarmaceutica(string forma) {
+		if (forma.length() > 0) {
+			this->formaFarmaceutica = forma;
+		}
+	}
+
+	string getFormaFarmaceutica() {
+		return this->formaFarmaceutica;
+	}
+
+	void setClasa(const char* clasaNoua) {
+		if (clasaNoua != NULL) {
+			if (this->clasa != NULL) {
+				delete[]this->clasa;
+			}
+			this->clasa = new char[strlen(clasaNoua) + 1];
+			strcpy_s(this->clasa, strlen(clasaNoua) + 1, clasaNoua);
+		}
+	}
+
+	char* getClasa() {
+		return this->clasa;
+	}
+
+	void setNecesitaReteta(bool necesitaReteta) {
+		this->necesitaReteta = necesitaReteta;
+	}
+
+	bool getNecesitaReteta() {
+		return this->necesitaReteta;
+	}
+
+	friend ostream& operator<<(ostream& out, const Antibiotic& a) {
+		out << (Medicament)a;
+		out << "Forma farmaceutica: " << a.formaFarmaceutica << ", Clasa: " << a.clasa <<
+			(a.necesitaReteta ? ", Necesita reteta." : ", Nu necesita reteta.");
+		return out;
+	}
+
+	float calcPretEstimativDupaScumpire() { 
+		//se adauga 10% la pret pentru antibioticele care se elibereaza fara reteta
+		float pretNou;
+		if (this->necesitaReteta == 0) {
+			pretNou=getPret() + getPret() * 0.1;
+		}
+		else {
+			pretNou= getPret();
+		}
+		return pretNou;
+	}
+
 };
 
 class Angajat {
@@ -347,12 +402,12 @@ public:
 	friend float calculeazaSalariulLunar(const Angajat& angajat, int oreLucrate, float tarifOrar);
 	friend float calculeazaBonusAnual(const Angajat& angajat);
 
-	Angajat operator++() { 
+	Angajat operator++() {
 		this->aniExperienta += 1.5;
 		return *this;
 	}
 
-	Angajat operator++(int) { 
+	Angajat operator++(int) {
 		Angajat stareInitiala = *this;
 		this->aniExperienta += 1.5;
 		return stareInitiala;
@@ -369,7 +424,7 @@ public:
 	friend ostream& operator<<(ostream& consola, const Angajat& angajat) {
 		consola << angajat.id << ". " << "Nume angajat: " << angajat.nume << ", Adresa: " << angajat.adresa << ". " << angajat.aniExperienta << " ani de experienta." << endl;
 		cout << " Nr maxim de ore de lucru permis pe saptamana:" << angajat.nrMaximOreLucrate << endl;
- 
+
 		return consola;
 	}
 
@@ -392,7 +447,7 @@ public:
 	}
 
 	friend ofstream& operator<<(ofstream& file, const Angajat& angajat) {
-		file<<angajat.nume<<" "<< angajat.adresa << " " << angajat.aniExperienta 
+		file << angajat.nume << " " << angajat.adresa << " " << angajat.aniExperienta
 			<< " " << angajat.nrMaximOreLucrate << endl;
 
 		return file;
@@ -414,7 +469,7 @@ public:
 		file >> angajat.aniExperienta;
 
 		return file;
-	} 
+	}
 
 	void scrieInFisierBinar(fstream& f) {
 
@@ -616,7 +671,7 @@ public:
 		}
 	}
 
-	void setMedicamente(int nrMedicamente, int*doza) {
+	void setMedicamente(int nrMedicamente, int* doza) {
 		if (nrMedicamente > 0) {
 			this->nrMedicamentePrescrise = nrMedicamente;
 			if (this->doze != NULL) {
@@ -726,7 +781,7 @@ public:
 		if (reteta.numeMedic != NULL) {
 			delete[]reteta.numeMedic;
 		}
-		reteta.numeMedic=new char[strlen(numeMedic) + 1];
+		reteta.numeMedic = new char[strlen(numeMedic) + 1];
 		strcpy_s(reteta.numeMedic, strlen(numeMedic) + 1, numeMedic);
 		cout << "Numar medicamente prescrise: ";
 		tastatura >> reteta.nrMedicamentePrescrise;
@@ -826,21 +881,21 @@ private:
 	bool inTratament;
 	static int nrTotalPacienti;
 public:
-	Pacient():idPacient(1000) {
+	Pacient() :idPacient(1000) {
 		this->nume = "PACIENT";
 		this->nrRetete = 3;
 		this->retete = new Reteta[3];
 		this->inTratament = 0;
 		this->nrTotalPacienti++;
 	}
-	
-	Pacient(int idNou, string numeNou, bool eInTratament):idPacient(idNou), nume(numeNou),  inTratament(eInTratament){
+
+	Pacient(int idNou, string numeNou, bool eInTratament) :idPacient(idNou), nume(numeNou), inTratament(eInTratament) {
 		this->nrRetete = 3;
 		this->retete = new Reteta[3];
 		this->nrTotalPacienti++;
 	}
 
-	Pacient(const Pacient& p):idPacient(p.idPacient) {
+	Pacient(const Pacient& p) :idPacient(p.idPacient) {
 		this->nume = p.nume;
 		this->nrRetete = p.nrRetete;
 		if (this->nrRetete > 0) {
@@ -937,7 +992,7 @@ public:
 		Pacient::nrTotalPacienti = nrPacienti;
 	}
 
-	Reteta& operator[](int index){
+	Reteta& operator[](int index) {
 		if (index >= 0 && index < this->nrRetete) {
 			return this->retete[index];
 		}
@@ -957,7 +1012,7 @@ public:
 		}
 		return consola;
 	}
-	
+
 	friend istream& operator>>(istream& tastatura, Pacient& pacient) {
 		cout << "Indroduceti numele pacientului: ";
 		tastatura >> pacient.nume;
@@ -969,7 +1024,7 @@ public:
 		if (pacient.nrRetete > 0) {
 			pacient.retete = new Reteta[pacient.nrRetete];
 			for (int i = 0;i < pacient.nrRetete;i++) {
-				cout << "Reteta " << i + 1 << ": "<<endl;
+				cout << "Reteta " << i + 1 << ": " << endl;
 				tastatura >> pacient.retete[i];
 			}
 		}
@@ -984,6 +1039,99 @@ public:
 };
 int Pacient::nrTotalPacienti = 0;
 
+class RetetaCuCompensare : public Reteta {
+private:
+	float sumaCompensare;
+	char* companieAsigurare;
+	const int codAutorizare;
+public:
+	RetetaCuCompensare(): Reteta(343, "Ioana"), codAutorizare(1000) {
+		this->sumaCompensare = 100;
+		this->companieAsigurare = new char[strlen("RapidAsig") + 1];
+		strcpy_s(this->companieAsigurare, strlen("RapidAsig") + 1, "RapidAsig");
+	}
+
+	RetetaCuCompensare(float sumaCompensare, int codAutorizare, int nrMedicamente, int* doze) : Reteta(92889, "Maria", nrMedicamente, doze), codAutorizare(codAutorizare) {
+		this->sumaCompensare = sumaCompensare;
+		this->companieAsigurare = new char[strlen("RapidAsig") + 1];
+		strcpy_s(this->companieAsigurare, strlen("RapidAsig") + 1, "RapidAsig");
+	}
+
+	RetetaCuCompensare(const RetetaCuCompensare& reteta):Reteta(reteta),codAutorizare(reteta.codAutorizare) {
+		this->sumaCompensare = reteta.sumaCompensare;
+		this->companieAsigurare = new char[strlen(reteta.companieAsigurare) + 1];
+		strcpy_s(this->companieAsigurare, strlen(reteta.companieAsigurare) + 1, reteta.companieAsigurare);
+	}
+
+	RetetaCuCompensare operator=(const RetetaCuCompensare& r) {
+		if (this != &r) {
+			Reteta::operator=(r);
+			this->sumaCompensare = r.sumaCompensare;
+			if (this->companieAsigurare != NULL) {
+				delete[]this->companieAsigurare;
+			}
+			this->companieAsigurare = new char[strlen(r.companieAsigurare) + 1];
+			strcpy_s(this->companieAsigurare, strlen(r.companieAsigurare) + 1, r.companieAsigurare);
+		}
+		return *this;
+	}
+
+	~RetetaCuCompensare() {
+		if (this->companieAsigurare != NULL) {
+			delete[]this->companieAsigurare;
+		}
+	}
+
+	void setSumaCompensare(float suma) {
+		if (suma >= 0) {
+			this->sumaCompensare = suma;
+		}
+	}
+
+	float getSumaCoompensare() {
+		return this->sumaCompensare;
+	}
+
+	void setCompanieAsigurare(const char* companie) {
+		if (this->companieAsigurare != NULL) {
+			delete[]this->companieAsigurare;
+		}
+		this->companieAsigurare = new char[strlen(companie) + 1];
+		strcpy_s(this->companieAsigurare, strlen(companie) + 1, companie);
+	}
+
+	char* getCompanieAsigurare() {
+		return this->companieAsigurare;
+	}
+
+	const int getCodAutorizare() {
+		return this->codAutorizare;
+	}
+
+	friend ostream& operator<<(ostream& out, const RetetaCuCompensare& r) {
+		out << (Reteta)r;
+		out << "Suma compensare: " << r.sumaCompensare << "lei . Companie asigurare: " << r.companieAsigurare
+			<< ". Cod autorizare: " << r.codAutorizare << endl;
+		return out;
+	}
+
+	float calcMediaDozelor(const char* numeCompanieDeAsigurare) { //calc a mediei dozelor din retele cu compensare de la o anumita companie de asigurare
+		float media = 0;
+		if (strcmp(this->companieAsigurare, numeCompanieDeAsigurare) == 0) {
+			int suma = 0;
+			for (int i = 0;i < getnrMedicamentePrescrise();i++) {
+				suma = suma + getDoze(i);
+			}
+			media = suma / getnrMedicamentePrescrise();
+		}
+		else {
+			cout << "INVALID" << endl;
+		}
+		return media;
+	}
+
+};
+
 void main() {
 	//cout << "MEDICAMENTE:\n" << endl;
 
@@ -997,7 +1145,7 @@ void main() {
 	//medicament3.afisare();
 
 	//cout << " Valoare TVA: " << Medicament::afisareTaxa() <<"%" << endl;
-		
+
 	//cout << "\nCONSTRUCTOR DE COPIERE:" << endl;
 
 	//Medicament medicament4(medicament2);
@@ -1146,17 +1294,17 @@ void main() {
 	//cout << "______________________________________________" << endl;
 	//cout << "\nReteta:\n" << endl;
 
-	int* doza;
-	doza = new int[2];
-	doza[0] = 300;
-	doza[1] = 250;
+	//int* doza;
+	//doza = new int[2];
+	//doza[0] = 300;
+	//doza[1] = 250;
 	//Reteta reteta1;
 	//reteta1.afisare();
 
 	//Reteta reteta2(902, "Maria Mihai");
 	//reteta2.afisare();
 
-	Reteta reteta3(437, "Daniela Radu", 2, doza);
+	//Reteta reteta3(437, "Daniela Radu", 2, doza);
 	//reteta3.afisare();
 
 	//cout << " Durata valabilitate reteta: " << Reteta::afisareDurataValabilitate() << " zile" << endl;
@@ -1407,7 +1555,49 @@ void main() {
 
 	//fbin.close();
 
-    cout << "Mostenire" << endl;
+	cout << "Mostenire: " << endl;
 
+	Antibiotic a1;
+	a1.setNume("Amoxicilina");
+	Antibiotic a2("Sirop", 1, 40200);
+	cout << a1 << endl << a2 << endl;
 
-} 
+	Antibiotic a3(a2);
+	cout << a3 << endl;
+
+	a3.setFormaFarmaceutica("Comprimate");
+
+	const char* clasa = "Sulfonamide";
+	a3.setClasa(clasa);
+
+	a3.setNecesitaReteta(0);
+
+	cout << a3.getFormaFarmaceutica() << ". " << a3.getClasa() << ". " << (a3.getNecesitaReteta() ? "Necesita reteta." : "Nu necesita reteta") << endl;
+	a2 = a3;
+	cout << a2 << endl;
+
+	int* vectorDoze = new int[2] {220, 300};
+	RetetaCuCompensare r1;
+	RetetaCuCompensare r2(250, 9399, 2, vectorDoze);
+	cout << r1 << endl << r2 << endl;
+
+	RetetaCuCompensare r3(r2);
+	cout << r3 << endl;
+
+	r3.setSumaCompensare(375);
+	const char* companieAsigurare = "GARANTIE SA";
+	r3.setCompanieAsigurare(companieAsigurare);
+	
+	cout << r3.getSumaCoompensare() << " " << r3.getCompanieAsigurare() << " " << r3.getCodAutorizare() << endl;
+
+	r1 = r3;
+	cout << r1 << endl;
+
+	cout << "Upcasting" << endl;
+
+	cout <<"Pretul actual: "<< a3.getPret() << " Pretul estimat dupa scumpire: " << a3.calcPretEstimativDupaScumpire() << endl;
+	a3.setNecesitaReteta(1);
+	cout << "Pretul actual: " << a3.getPret() << " Pretul estimat dupa scumpire: " << a3.calcPretEstimativDupaScumpire() << endl;
+	cout << "Media dozelor: "<<r3.calcMediaDozelor("GARANTIE SA") << endl;
+	cout << "Media dozelor: " << r2.calcMediaDozelor("GARANTIE SA") << endl;
+}
